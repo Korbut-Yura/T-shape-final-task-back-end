@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "title": "Comix Zone",
+        "price": "2",
+        "description": "description",
+        "pictureUrl": "https://i.pinimg.com/236x/e0/9e/0a/e09e0a0459db3718b7b67f2895b328f3--sega-mega-drive-sega-genesis.jpg"
+    },
+    {
+        "id": "2",
+        "title": "Earth Worm Jim",
+        "price": "4",
+        "description": "description",
+        "pictureUrl": "https://i.pinimg.com/originals/bf/40/5d/bf405d9a913c5545e2f4e25d951541e2.jpg"
+    },{
+        "id": "3",
+        "title": "Boogerman",
+        "price": "3",
+        "description": "description",
+        "pictureUrl": "https://upload.wikimedia.org/wikipedia/ru/thumb/5/51/Boogerman.png/274px-Boogerman.png"
+    }
+]
