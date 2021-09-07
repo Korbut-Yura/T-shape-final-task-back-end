@@ -27,6 +27,13 @@ provider:
   stage: dev
   region: eu-west-1
 
+  environment:
+    PG_HOST: ${file(./config.json):PG_HOST}
+    PG_PORT: ${file(./config.json):PG_PORT}
+    PG_DATABASE: ${file(./config.json):PG_DATABASE}
+    PG_USERNAME: ${file(./config.json):PG_USERNAME}
+    PG_PASSWORD: ${file(./config.json):PG_PASSWORD}
+
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -63,6 +70,9 @@ functions:
           method: get
           path: /products
           cors: true
+          response: 
+            headers:
+              Access-Control-Allow-Origin: "*" 
   getProductsById:
     handler: handlers/getProductsById.getProductsById
     events:
@@ -74,6 +84,9 @@ functions:
             parameters:
               paths: 
                 productId: true
+          response: 
+            headers:
+              Access-Control-Allow-Origin: "*" 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

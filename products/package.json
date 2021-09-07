@@ -1,0 +1,22 @@
+{
+  "name": "products",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serverless.yml",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Korbut-Yura/T-shape-final-task-back-end.git"
+  },
+  "author": "Yury Korbut",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Korbut-Yura/T-shape-final-task-back-end/issues"
+  },
+  "homepage": "https://github.com/Korbut-Yura/T-shape-final-task-back-end#readme",
+  "dependencies": {
+    "pg": "^8.7.1"
+  }
+}

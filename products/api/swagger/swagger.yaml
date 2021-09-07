@@ -1,0 +1,64 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Products API"
+host: "f9k2jnfnzd.execute-api.eu-west-1.amazonaws.com"
+basePath: /dev
+schemes:
+  - https
+paths:
+  /products:
+    get: 
+      description: "Get all available products of the shop"
+      summary: "Get products"
+      operationId: "GetProducts"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "A list of products"
+          schema:
+            type: object
+            properties:
+              products:
+                type: array
+                items: 
+                  $ref: "#/definitions/Product"
+  /products/{productId}:
+    get:
+      summary: "Find product by ID"
+      description: "Returns a single product"
+      operationId: "getProductById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of product to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "Pet not found"
+definitions:
+  Product:
+    type: "object"
+    properties: 
+      id: 
+        type: "string"
+      title: 
+        type: "string"
+      description:
+        type: "string"
+      price: 
+        type: "string"
+      pictureUrl:
+        type: "string"
+        
+
+
