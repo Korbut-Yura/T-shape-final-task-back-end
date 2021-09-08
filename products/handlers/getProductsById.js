@@ -33,6 +33,9 @@ module.exports.getProductsById = async (event, context) => {
       return {
         statusCode: 200,
         body: JSON.stringify( rows, null, 2 ),
+        headers: {
+          "Access-Control-Allow-Origin": "*" 
+        }
       };
     } catch (_err) {
         let err = _err

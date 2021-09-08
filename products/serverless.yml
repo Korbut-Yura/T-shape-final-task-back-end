@@ -70,9 +70,13 @@ functions:
           method: get
           path: /products
           cors: true
-          response: 
-            headers:
-              Access-Control-Allow-Origin: "*" 
+  createProduct:
+    handler: handlers/createProduct.createProduct
+    events:
+      - http:
+          method: post
+          path: /products
+          cors: true
   getProductsById:
     handler: handlers/getProductsById.getProductsById
     events:
@@ -84,9 +88,6 @@ functions:
             parameters:
               paths: 
                 productId: true
-          response: 
-            headers:
-              Access-Control-Allow-Origin: "*" 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

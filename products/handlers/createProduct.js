@@ -16,20 +16,26 @@ const dbOptions = {
   connectionTimeoutMillis: 5000
 }
 
-module.exports.getProductsList = async (event) => {
+module.exports.createProduct = async (event) => {
   const client = new Client(dbOptions);
   await client.connect()
 
   try{
-    const { rows } = await client.query(`
-      SELECT id, title, description, price, photoUrl, count 
-      FROM products
-      JOIN stocks ON products.id = stocks.product_id
+    const { title, description, price, count, photourl } = JSON.parse(event.body)
+
+    await client.query(`
+      WITH first_insert AS (
+        INSERT INTO products (title, description, price, photourl)
+        VALUES ($$${title}$$, $$${description}$$, '${price}', '${photourl}')
+        RETURNING id 
+      )
+      INSERT INTO stocks (product_id, count)
+      SELECT id, '${count}'
+      FROM first_insert
     `)
 
     return {
       statusCode: 200,
-      body: JSON.stringify( rows, null, 2 ),
       headers: {
         "Access-Control-Allow-Origin": "*" 
       }
