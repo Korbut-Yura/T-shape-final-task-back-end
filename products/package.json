@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Korbut-Yura/T-shape-final-task-back-end#readme",
   "dependencies": {
+    "@middy/core": "^2.5.1",
+    "@middy/input-output-logger": "^2.5.1",
     "pg": "^8.7.1"
   }
 }

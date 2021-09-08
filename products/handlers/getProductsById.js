@@ -1,6 +1,8 @@
 'use strict';
-const {Client} = require('pg')
-const {ErrorResponse} = require('../errors/ErrorResponse')
+const { Client } = require('pg')
+const { ErrorResponse } = require('../errors/ErrorResponse')
+const middy = require('@middy/core')
+const inputOutputLogger = require('@middy/input-output-logger')
 
 const {PG_HOST, PG_PORT, PG_DATABASE, PG_USERNAME, PG_PASSWORD} = process.env
 
@@ -16,7 +18,7 @@ const dbOptions = {
   connectionTimeoutMillis: 5000
 }
 
-module.exports.getProductsById = async (event, context) => {
+const getProductsById = middy(async (event, context) => {
   const client = new Client(dbOptions);
   await client.connect()
 
@@ -48,5 +50,8 @@ module.exports.getProductsById = async (event, context) => {
     } finally {
       client.end()
     }
+});
 
-};
+getProductsById.use(inputOutputLogger())
+
+module.exports = {getProductsById}
