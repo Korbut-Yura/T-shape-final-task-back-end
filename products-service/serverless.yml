@@ -64,21 +64,21 @@ provider:
 
 functions:
   getProductsList:
-    handler: handlers/getProductsList.getProductsList
+    handler: handlers/index.getProductsList
     events:
       - http:
           method: get
           path: /products
           cors: true
   createProduct:
-    handler: handlers/createProduct.createProduct
+    handler: handlers/index.createProduct
     events:
       - http:
           method: post
           path: /products
           cors: true
   getProductsById:
-    handler: handlers/getProductsById.getProductsById
+    handler: handlers/index.getProductsById
     events:
       - http:
           method: get
