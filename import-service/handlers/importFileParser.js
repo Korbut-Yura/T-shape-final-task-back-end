@@ -5,7 +5,8 @@ const BUCKET = 'uploaded-products-bucket'
 
 module.exports.importFileParser = async (event) => {
     const s3 = new AWS.S3({region: 'eu-west-1'});
-   
+    const sqs = new AWS.SQS({ region: 'eu-west-1' })
+    console.log('process.env', process.env );
     try {
         for (const record of event.Records) {
             const params = {
@@ -16,8 +17,22 @@ module.exports.importFileParser = async (event) => {
             const s3Stream = s3.getObject(params).createReadStream()
             await new Promise((res,rej) => {
                 s3Stream
-                .pipe(csv())
-                .on('data', (data) => { console.log("data", JSON.stringify(data))})
+                .pipe(csv({
+                    headers: ['title', 'description', 'photourl', 'price', 'count']
+                }))
+                .on('data', async (data) => { 
+                    console.log("product", JSON.stringify(data))
+                    sqs.sendMessage({
+                        QueueUrl: process.env.SQS_URL,
+                        MessageBody: JSON.stringify(data)
+                    }, (err,data)=> {
+                        if (err) {
+                            console.log('Error!!!', err);
+                        } else {
+                            console.log(`Message ${data} sended to the queue` );
+                        }
+                    })    
+                })
                 .on('error', ()=> { rej() })
                 .on('end', async () => {
                     await s3.copyObject({
@@ -42,7 +57,8 @@ module.exports.importFileParser = async (event) => {
     } catch (err) {
         return {
             statusCode: 500,
-            message: err.message
+            message: err.message,
+            headers: { "Access-Control-Allow-Origin": "*" },
         }
     }
   };

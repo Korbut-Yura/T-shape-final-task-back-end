@@ -26,6 +26,7 @@ provider:
   lambdaHashingVersion: 20201221
   stage: dev
   region: eu-west-1
+
   iamRoleStatements:
     - Effect: "Allow"
       Action: 
@@ -36,27 +37,55 @@ provider:
       Action: 
         - "s3:*"
       Resource:
-        - "arn:aws:s3:::uploaded-products-bucket/*" 
+        - "arn:aws:s3:::uploaded-products-bucket/*"
+    - Effect: "Allow"
+      Action: 
+        - "sqs:*"
+      Resource:
+        - Fn::GetAtt: [SQSQueue, Arn]
+    - Effect: "Allow"
+      Action:
+        - "sns:*"
+      Resource:
+        Ref: SNSTopic
+  
+  environment:
+    SQS_URL:
+      Ref: SQSQueue
+    SNS_ARN:
+      Ref: SNSTopic
+    PG_HOST: ${file(./config.json):PG_HOST}
+    PG_PORT: ${file(./config.json):PG_PORT}
+    PG_DATABASE: ${file(./config.json):PG_DATABASE}
+    PG_USERNAME: ${file(./config.json):PG_USERNAME}
+    PG_PASSWORD: ${file(./config.json):PG_PASSWORD}
+    # BUCKET:
+    #   Ref: Bucket
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
 
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: parsed-products-queue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: parsed-products-topic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: korbutyura@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+    # Bucket:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: uploaded-products-bucket
+    #     existing: true
+
 
 # you can add packaging information here
 #package:
@@ -87,7 +116,15 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-
+  catalogBatchProcess: 
+    handler: handlers/index.catalogBatchProcess
+    events:
+      - sqs: 
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
